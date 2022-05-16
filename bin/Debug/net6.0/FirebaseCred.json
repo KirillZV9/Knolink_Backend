@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "pomogatorapp",
+  "private_key_id": "233ac8aaf83e1f6c33189ef5f22c794bb3d066dc",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDJCJez1cmHapQy\nyCHm54kJve+t5xrNpyJYvLefqItIJqhRtlVk7RDOnCw70sF2XoLD032QRGJQ9jF6\nE9sb2RgzS+Qz5xfO2aPOgzKL841SRCzJtoOZxhJXbMwWPC+vzBSMjhS4FAHOv9bH\ndHnEZ1IUYgWzip2jEIRhwibt0nlxGRIVcq+MgJS9Q5d+rvUezq7H5EAhMockTvDB\nEUw8K708nyEhUOJkv3Cgl7A7nxDOKehe75YXNEg4Q/uUHM17IFespqykce2+rQzm\n9vmtMQ3s4DSa8/PUXFIek53uHKGzrbDJsHrHc0dLhzbOF7n+gbFJhWQ9YJWv98Gr\n/kExP7AxAgMBAAECggEAXkXeRiISMKOlPa8mXs7jL6NXW1jN8/TVoYFWJtP2BO7D\n7hWwM/UL9ae9AozR1n15mvV5o4a+CDN7fkEDdiq3M476Q/Cx9HmRXI2fzYt4EUUR\nL8KcMid1gHPvvNmajzkHxeX3B1+yfU7vHHedhqHhFtfkzo5JYCelvOY8NTiHZKZE\nTuttD604zKZBO3ThCXSqO3XgRMzIuasFiEcQiEoWTOs5pnlnKPk5Oa/pKXvXYDWY\ng8TqwbVOTzSlKfauqjLHBrTxpzpL7BYxgyeIGvOwz/7oWYppFUgtAs+XfEnwlk/x\n0wCbVVp33s3Iaae3oG91PZJHt/x1yqFDaDjUjBeHZQKBgQD6N7eC0C4vaFpYVwX0\n2BScNKcDCiZmng+GyjLHgtPSv7nHLPSRkFs7lX+KJf3KFle/tpacIGBnTY6QjhOV\n5znop5ir/fxkVV1gO3w33IYz8Qc60WEmR19kYfsDfcl+eRF0jWXJqUwZQkZhS2eI\nUHvLOyum+fmQSvxQX//GHIvRywKBgQDNredSqQ+cniEy8iHDNSlpT/mgub6ny/ZE\nqTSXicAEWhTNMy7/DYOZwF/z9fOiXLfSf9YLSxVIuhrHyZ8GAg7jwgqoxxQ+TF06\n/XPqiRdOvKsVfRUzbUY2PU2kD4mEAKfHfmKcvk/aOCco5YU1vDD7rhQf61i2Wicq\nWQt+bhsWcwKBgGz44wUnoVWoPuCGVePCT4eQLsRWIU9Du0NawC6/vXzlXwVtgL38\nfp8+hqMl1Je0j1bBMGqidxnGXzZ5ifIZF9FJXGZbYRZZTydgAMNbWV85s4pcMdE3\n+EWBno5ws9ZO59k404G2J5xAjuJEsrxdQOzLwkEgUR4Uajqe9IfVWtdtAoGBAK4x\nKkiHhgFOqy9Kge2hiID4iqHkrePOibN82l28/DKzWAqx3ouEFoCQvLMRClXn0Icm\nXVETNeNyOlwaFeQwuguKuxxV/n8EjbD4FsP7dxHoF70LQnlbgqtNIARiZES3iWEb\nWMkHJPnbtM6eFEN+Lr34oHKoD2ng0Gq9H07kUWyhAoGAYY9T/+l+Up11tdl27wQW\nCjqwId7AANRIyM61FhE/fzVgW1xpw8El//QwODJhswbGJa1wH1miWKNYRUYn7vsh\n0P+3Dqwra6U4mk37QuQDtHb5ZVxSWI8vcaezJDfYs6tPUogpgD8YFAkwf0N1zrvm\n/6hxPzHngXHqmd4lMu0b/PM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-jomk2@pomogatorapp.iam.gserviceaccount.com",
+  "client_id": "103291331168989733554",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-jomk2%40pomogatorapp.iam.gserviceaccount.com"
+}
