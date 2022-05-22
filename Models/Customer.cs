@@ -1,11 +1,19 @@
-﻿namespace PomogatorAPI.Models
+﻿using Google.Cloud.Firestore;
+
+namespace PomogatorAPI.Models
 {
+    [FirestoreData]
     public class Customer
     {
+        [FirestoreProperty]
         public string Id { get; set; }
+        [FirestoreProperty]
         public string Name { get; set; }
+        [FirestoreProperty]
         public string TelNum { get; set; }
-        public decimal Balance { get; set; }
+        [FirestoreProperty]
+        public double Balance { get; set; }
+        [FirestoreProperty]
         public string Status { get; set; }
 
         public Customer(string id, string telNum, string name)
@@ -16,6 +24,8 @@
             Balance = 0;
             Status = "делаеца";
         }
+
+        public Customer() { }
     }
 
 }

@@ -9,38 +9,67 @@
 
     public class CustomerRepository : ICustomer
     {
-        List<Customer> _customerList = new List<Customer> { };
+        public List<Customer> Customers {get; set;}
 
-        FirestoreDb db =  FirestoreDb.Create(fbProjectId);
+        private readonly FirestoreDb db =  FirestoreDb.Create(fbProjectId);
 
-        public void Delete(int id)
+        private const string fbCollection = "Customers";
+
+        public CustomerRepository()
         {
-            throw new NotImplementedException();
+            Customers = new List<Customer>();
         }
 
-        public bool DoesCustomerExist(int id)
+        async public Task DeleteAsync(string id)
         {
-            throw new NotImplementedException();
-        }
-
-
-        public async Task PostAsync(Customer customer)
-        {
-            DocumentReference docRef = db.Collection("Customers").Document(customer.Id);
-            Dictionary<string, object> _customer = new Dictionary<string, object>()
+            if (DoesCustomerExistAsync(id).Result)
             {
-                {"Id", customer.Id},
-                {"Name", customer.Name},
-                {"TelNum", customer.TelNum },
-                {"Balance", customer.Balance },
-                {"Status", customer.Status }
-            };
-            await docRef.SetAsync(_customer);
+                DocumentReference customerRef = db.Collection(fbCollection).Document(id);
+                DocumentSnapshot snapshot = await customerRef.GetSnapshotAsync();
+                Customer customer = snapshot.ConvertTo<Customer>();
+                this.Customers.Add(customer);
+                await customerRef.DeleteAsync();
+            }
+            else
+                throw new ArgumentException();
+        }
+
+        private async Task<bool> DoesCustomerExistAsync(string id)
+        {
+            DocumentReference docRef = db.Collection(fbCollection).Document(id);
+            DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+            if (snapshot.Exists)
+                return true;
+            return false;
+        }
+
+
+        public async Task PostAsync(string id, string telNum, string name)
+        {
+            Customer customer = new Customer(id, telNum, name);
+
+            if (!DoesCustomerExistAsync(customer.Id).Result)
+            {
+                Customers.Add(customer);
+
+                DocumentReference docRef = db.Collection(fbCollection).Document(customer.Id);
+                Dictionary<string, object> _customer = new Dictionary<string, object>(){
+                    {"Id", customer.Id},
+                    {"Name", customer.Name},
+                    {"TelNum", customer.TelNum },
+                    {"Balance", customer.Balance },
+                    {"Status", customer.Status }
+                };
+
+                await docRef.SetAsync(_customer);
+            }
+            else
+                throw new ArgumentException();
         }
 
         public async Task PostASS()
         {
-            DocumentReference docRef = db.Collection("Customers").Document("TEST");
+            DocumentReference docRef = db.Collection(fbCollection).Document("TEST");
             Dictionary<string, object> _customer = new Dictionary<string, object>()
             {
                 {"Id", "1488"},
@@ -52,14 +81,39 @@
             await docRef.SetAsync(_customer);
         }
 
-        public void Update(Customer customer)
+        public async Task UpdateAsync(Customer customerUpdated)
         {
-            throw new NotImplementedException();
+            if (DoesCustomerExistAsync(customerUpdated.Id).Result)
+            {
+                DocumentReference customerRef = db.Collection(fbCollection).Document(customerUpdated.Id);
+                Dictionary<string, object> updates = new Dictionary<string, object>
+                {
+                    {"Id", customerUpdated.Id},
+                    {"Name", customerUpdated.Name},
+                    {"TelNum", customerUpdated.TelNum},
+                    {"Balance", customerUpdated.Balance},
+                    {"Status", "Created"}
+
+                };
+
+                await customerRef.UpdateAsync(updates);
+                Customers.Add(customerUpdated);
+            }
+            else
+                throw new ArgumentException();
         }
 
-        public Customer Get(int id)
+        public async Task GetAsync(string id)
         {
-            throw new NotImplementedException();
+            if (DoesCustomerExistAsync(id).Result)
+            {
+                DocumentReference docRef = db.Collection(fbCollection).Document(id);
+                DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+                Customer customer = snapshot.ConvertTo<Customer>();
+                Customers.Add(customer);
+            }
+            else
+                throw new ArgumentException();
         }
     }
 }

@@ -10,15 +10,23 @@ namespace PomogatorAPI.Controllers
     [Route("[controller]")]
     public class CustomerController : ControllerBase
     {
-        ICustomer customerRep = new CustomerRepository();
+
+        private readonly ICustomer _customerRep;
+
+        public CustomerController (ICustomer customerRep)
+        {
+            _customerRep = customerRep;
+        }
+
+
 
         [HttpPost]
         async public Task<ActionResult> Create()
         {
             try
             {
-                await customerRep.PostASS();
-                return NotFound();
+                await _customerRep.PostASS();
+                return Ok();
             }
             catch
             {
@@ -26,13 +34,54 @@ namespace PomogatorAPI.Controllers
             }
         }
 
-        [HttpPost("Create")]
-        async public Task<ActionResult<Customer>> Create(string id, string telNum, string name)
+        [HttpPost]
+        async public Task<ActionResult<List<Customer>>> Create(string id, string telNum, string name)
         {
             try { 
-                Customer customer = new Customer(id, telNum, name);
-                await customerRep.PostAsync(customer);
-                return Ok(customer);
+                await _customerRep.PostAsync(id, telNum, name);
+                return Ok(_customerRep.Customers);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{id}")]
+        async public Task<ActionResult<List<Customer>>> Get(string id)
+        {
+            try
+            {
+                await _customerRep.GetAsync(id);
+                return Ok(_customerRep.Customers);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{id}")]
+        async public Task<ActionResult<List<Customer>>> Delete(string id)
+        {
+            try
+            {
+                await _customerRep.DeleteAsync(id);
+                return Ok(_customerRep.Customers);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut]
+        async public Task<ActionResult<List<Customer>>> Put(Customer customerUpdated)
+        {
+            try
+            {
+                await _customerRep.UpdateAsync(customerUpdated);
+                return Ok(_customerRep.Customers);
             }
             catch
             {
