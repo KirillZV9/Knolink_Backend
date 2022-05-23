@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kirillss/Projects/duplicate/netwoah_uni_back/PomogatorAPI.csproj": {}
+    "C:\\Users\\alexv\\Source\\Repos\\netwoah_uni_back\\PomogatorAPI.csproj": {}
   },
   "projects": {
-    "/Users/kirillss/Projects/duplicate/netwoah_uni_back/PomogatorAPI.csproj": {
+    "C:\\Users\\alexv\\Source\\Repos\\netwoah_uni_back\\PomogatorAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kirillss/Projects/duplicate/netwoah_uni_back/PomogatorAPI.csproj",
+        "projectUniqueName": "C:\\Users\\alexv\\Source\\Repos\\netwoah_uni_back\\PomogatorAPI.csproj",
         "projectName": "PomogatorAPI",
-        "projectPath": "/Users/kirillss/Projects/duplicate/netwoah_uni_back/PomogatorAPI.csproj",
-        "packagesPath": "/Users/kirillss/.nuget/packages/",
-        "outputPath": "/Users/kirillss/Projects/duplicate/netwoah_uni_back/obj/",
+        "projectPath": "C:\\Users\\alexv\\Source\\Repos\\netwoah_uni_back\\PomogatorAPI.csproj",
+        "packagesPath": "C:\\Users\\alexv\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\alexv\\Source\\Repos\\netwoah_uni_back\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/kirillss/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\alexv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -73,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.300/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

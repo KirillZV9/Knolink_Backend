@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ICustomer, CustomerRepository>();
 
+builder.Services.AddScoped<ITutor, TutorRepository>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
