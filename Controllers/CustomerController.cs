@@ -4,6 +4,7 @@ using PomogatorAPI.Interfaces;
 using PomogatorAPI.Repositories;
 using PomogatorAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace PomogatorAPI.Controllers
 {
@@ -24,29 +25,43 @@ namespace PomogatorAPI.Controllers
         [HttpGet("{id}")]
         async public Task<ActionResult<List<Customer>>> Get(string id)
         {
-            try
+            var identity = User.Identity as ClaimsIdentity;
+
+            if (AuthService.GetUserId(identity) == id)
             {
-                await _customerRep.GetAsync(id);
-                return Ok(_customerRep.Customers);
+                try
+                {
+                    await _customerRep.GetAsync(id);
+                    return Ok(_customerRep.Customers);
+                }
+                catch
+                {
+                    return BadRequest();
+                }
             }
-            catch
-            {
-                return BadRequest();
-            }
+
+            return Forbid();
         }
 
         [HttpPut]
         async public Task<ActionResult<List<Customer>>> Put(Customer customerUpdated)
         {
-            try
+            var identity = User.Identity as ClaimsIdentity;
+
+            if (AuthService.GetUserId(identity) == customerUpdated.Id)
             {
-                await _customerRep.UpdateAsync(customerUpdated);
-                return Ok(_customerRep.Customers);
+                try
+                {
+                    await _customerRep.UpdateAsync(customerUpdated);
+                    return Ok(_customerRep.Customers);
+                }
+                catch
+                {
+                    return BadRequest();
+                }
             }
-            catch
-            {
-                return BadRequest();
-            }
+
+            return Forbid();
         }
         
         

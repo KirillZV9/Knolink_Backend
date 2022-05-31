@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PomogatorAPI.Interfaces;
 using PomogatorAPI.Models;
+using System.Security.Claims;
 
 namespace PomogatorAPI.Controllers
 {
@@ -91,6 +92,8 @@ namespace PomogatorAPI.Controllers
         [HttpPost("tutorsignup")]
         async public Task<ActionResult<string>> TutorSignUp(TutorDTO dto)
         {
+            var identity = User.Identity as ClaimsIdentity;
+
             try
             {
                 await _authService.SignIn(dto.Id, dto.AuthCode, "tutor");

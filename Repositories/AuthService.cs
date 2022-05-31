@@ -67,6 +67,8 @@ namespace PomogatorAPI.Repositories
         {
 			await CodeVerification(id, authCode);
 
+			await DeleteUserLogin(id);
+
 			CreateToken(User, role);
         }
 
@@ -165,6 +167,12 @@ namespace PomogatorAPI.Repositories
 				await PostUserLogin(User);
 
         }
+
+		public static string GetUserId(ClaimsIdentity identity)
+        {
+			IEnumerable<Claim> claims = identity.Claims;
+			return claims.Where(p => p.Type == "NameIdentifier").FirstOrDefault().Value;
+		}
 
 	}
 }
