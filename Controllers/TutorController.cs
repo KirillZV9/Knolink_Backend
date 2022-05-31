@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using PomogatorAPI.Interfaces;
 using PomogatorAPI.Repositories;
 using PomogatorAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PomogatorAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "tutor")]
     public class TutorController : ControllerBase
     {
         private readonly ITutor _tutorRep;
@@ -48,7 +50,7 @@ namespace PomogatorAPI.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+/*        [HttpDelete("{id}")]
         async public Task<ActionResult<List<Tutor>>> Delete(string id)
         {
             try
@@ -60,7 +62,7 @@ namespace PomogatorAPI.Controllers
             {
                 return BadRequest();
             }
-        }
+        }*/
 
         [HttpPut]
         async public Task<ActionResult<List<Tutor>>> Put(Tutor tutorUpdate)

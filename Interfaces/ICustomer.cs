@@ -9,7 +9,7 @@ namespace PomogatorAPI.Interfaces
         Task PostAsync(string id, string telNum, string name);
         Task UpdateAsync(Customer customer);
         Task DeleteAsync(string id);
-
+        Task<bool> DoesCustomerExistAsync(string id);
         Task PostASS();
     }
 }

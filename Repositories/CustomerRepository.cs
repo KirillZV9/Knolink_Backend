@@ -13,7 +13,7 @@
 
         private readonly FirestoreDb db =  FirestoreDb.Create(fbProjectId);
 
-        private const string fbCollection = "Customers";
+        private const string fbCollection = "сustomers";
 
         public CustomerRepository()
         {
@@ -34,7 +34,7 @@
                 throw new ArgumentException();
         }
 
-        private async Task<bool> DoesCustomerExistAsync(string id)
+        public async Task<bool> DoesCustomerExistAsync(string id)
         {
             DocumentReference docRef = db.Collection(fbCollection).Document(id);
             DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
@@ -57,8 +57,7 @@
                     {"Id", customer.Id},
                     {"Name", customer.Name},
                     {"TelNum", customer.TelNum },
-                    {"Balance", customer.Balance },
-                    {"Status", customer.Status }
+                    {"Balance", customer.Balance }
                 };
 
                 await docRef.SetAsync(_customer);
@@ -75,8 +74,7 @@
                 {"Id", "1488"},
                 {"Name", "BEN"},
                 {"TelNum", "NO"},
-                {"Balance", 0},
-                {"Status", "YES"}
+                {"Balance", 0}
             };
             await docRef.SetAsync(_customer);
         }
@@ -91,8 +89,7 @@
                     {"Id", customerUpdated.Id},
                     {"Name", customerUpdated.Name},
                     {"TelNum", customerUpdated.TelNum},
-                    {"Balance", customerUpdated.Balance},
-                    {"Status", "Created"}
+                    {"Balance", customerUpdated.Balance}
 
                 };
 

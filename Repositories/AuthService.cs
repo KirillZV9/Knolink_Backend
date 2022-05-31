@@ -6,10 +6,11 @@ using System.IdentityModel.Tokens.Jwt;
 using Google.Cloud.Firestore;
 using static PomogatorAPI.Config;
 using System.Security.Cryptography;
+using PomogatorAPI.Interfaces;
 
 namespace PomogatorAPI.Repositories
 {
-	public class AuthService
+	public class AuthService : IAuth
 	{
 		
 		private readonly IConfiguration _config;
@@ -22,15 +23,18 @@ namespace PomogatorAPI.Repositories
 
 		private const string fbCollection = "customer_login";
 
-		LoginData? User { get; set; }
+		public LoginData User { get ; set; } = new LoginData();
 
-		String? AuthCode { get; set; }
+		public String AuthCode { get; set; } = string.Empty;
 
-		private string CreateToken(LoginData user)
+		public string Token { get; set; } = string.Empty;
+
+		private void CreateToken(LoginData user, string role)
         {
 			List<Claim> claims = new List<Claim>()
             {
-				new Claim(ClaimTypes.NameIdentifier, user.Id)
+				new Claim(ClaimTypes.NameIdentifier, user.Id),
+				new Claim(ClaimTypes.Role, role)
             };
 
 			var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -44,12 +48,10 @@ namespace PomogatorAPI.Repositories
 				signingCredentials: creds
 				);
 
-			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-			return jwt;
+			Token = new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-		private async Task/*<LoginData>*/ FindUser(string id)
+		private async Task FindUser(string id)
         {
 			DocumentReference docRef = db.Collection(fbCollection).Document(id);
 			DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
@@ -58,24 +60,17 @@ namespace PomogatorAPI.Repositories
 				throw new ArgumentException();
 
 			User = snapshot.ConvertTo<LoginData>();
-			/*return loginData;*/
+			
 		}
 
-		public async Task<string> SignIn(string id, string authCode)
+		public async Task SignIn(string id, string authCode, string role)
         {
+			await CodeVerification(id, authCode);
 
-            await FindUser(id);
-			/*LoginData userData = FindUser(id).Result;*/
-			if (VerifyAuthCodeHash(authCode, User.CodeHash, User.CodeSalt))
-               {
-				var response = CreateToken(User);
-				return response;
-               }
-			throw new ArgumentException();
-
+			CreateToken(User, role);
         }
 
-		private bool VerifyAuthCodeHash(string authCode, byte[] codeHash, byte[] codeSalt)
+		private bool CompareAuthCodeHash(string authCode, byte[] codeHash, byte[] codeSalt)
         {
 			using (var hmac = new HMACSHA512(codeSalt))
             {
@@ -83,6 +78,15 @@ namespace PomogatorAPI.Repositories
 				return computedHash.SequenceEqual(codeHash);
             }
         }
+
+		public async Task CodeVerification(string id, string authCode)
+        {
+			await FindUser(id);
+
+			if (!CompareAuthCodeHash(authCode, User.CodeHash, User.CodeSalt))
+				throw new ArgumentException();
+
+		}
 
 		public void GenerateCode()
         {
@@ -95,8 +99,9 @@ namespace PomogatorAPI.Repositories
 			DocumentReference docRef = db.Collection(fbCollection).Document(user.Id);
 			Dictionary<string, object> _user = new Dictionary<string, object>(){
 					{"Id", user.Id},
+					{"TelNum", user.TelNum},					
 					{"CodeHash", user.CodeHash},
-					{"CodeSalt", user.CodeSalt },
+					{"CodeSalt", user.CodeSalt},
 				};
 			await docRef.SetAsync(_user);
 		}
@@ -106,18 +111,34 @@ namespace PomogatorAPI.Repositories
 			DocumentReference docRef = db.Collection(fbCollection).Document(user.Id);
 			Dictionary<string, object> _user = new Dictionary<string, object>(){
 					{"Id", user.Id},
+					{"TelNum", user.TelNum},
 					{"CodeHash", user.CodeHash},
-					{"CodeSalt", user.CodeSalt },
+					{"CodeSalt", user.CodeSalt},
 				};
 			await docRef.UpdateAsync(_user);
+		}
+
+		public async Task DeleteUserLogin(string id)
+        {
+			if (DoesUserLoginExistAsync(id).Result)
+			{
+				DocumentReference customerRef = db.Collection(fbCollection).Document(id);
+				DocumentSnapshot snapshot = await customerRef.GetSnapshotAsync();
+				Customer customer = snapshot.ConvertTo<Customer>();
+				await customerRef.DeleteAsync();
+			}
+			else
+				throw new ArgumentException();
 		}
 
 		private async Task<bool> DoesUserLoginExistAsync(string id)
 		{
 			DocumentReference docRef = db.Collection(fbCollection).Document(id);
 			DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+
 			if (snapshot.Exists)
 				return true;
+
 			return false;
 		}
 
@@ -130,13 +151,13 @@ namespace PomogatorAPI.Repositories
             }
         }
 
-		public async Task GetAuthCode(string id)
+		public async Task GetAuthCodeAsync(string id, string telNum)
         {
 			GenerateCode();
 
 			CreateCodeHash(AuthCode, out byte[] codeHash, out byte[] codeSalt);
 
-			User = new LoginData(id, codeHash, codeSalt);
+			User = new LoginData(id, telNum, codeHash, codeSalt);
 			
 			if(DoesUserLoginExistAsync(id).Result)
 				await UpdateUserLogin(User);
@@ -145,7 +166,6 @@ namespace PomogatorAPI.Repositories
 
         }
 
-		public Task<string> SignUp()
 	}
 }
 

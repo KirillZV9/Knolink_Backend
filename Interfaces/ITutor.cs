@@ -7,7 +7,7 @@ namespace PomogatorAPI.Interfaces
         List<Tutor> Tutors { get; set; }
         Task GetAsync(string id);
         Task<bool> DoesTutorExistAsync(string id);
-        Task PostAsync(string id, string telNum, string name);
+        Task PostAsync(string id, string telNum, string name, string university);
         Task UpdateAsync(Tutor tutor);
         Task DeleteAsync(string id);
     }

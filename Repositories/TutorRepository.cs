@@ -13,7 +13,7 @@
 
         private readonly FirestoreDb db = FirestoreDb.Create(fbProjectId);
 
-        private const string fbCollection = "tutor";
+        private const string fbCollection = "tutors";
 
         public TutorRepository()
         {
@@ -23,9 +23,9 @@
 
 
 
-        public async Task PostAsync(string id, string telNum, string name)
+        public async Task PostAsync(string id, string telNum, string name, string university)
         {
-            Tutor tutor = new Tutor(id, telNum, name);
+            Tutor tutor = new Tutor(id, telNum, name, university);
 
             if (DoesTutorExistAsync(tutor.Id).Result)
                 throw new ArgumentException(); 
@@ -37,7 +37,6 @@
                     {"Name", tutor.Name},
                     {"TelNum", tutor.TelNum },
                     {"Balance", tutor.Balance },
-                    {"Status", tutor.Status },
                     {"Rating", tutor.Rating },
                     {"University", tutor.University }
             };
@@ -74,7 +73,6 @@
                     {"Name", tutor.Name},
                     {"TelNum", tutor.TelNum },
                     {"Balance", tutor.Balance },
-                    {"Status", tutor.Status },
                     {"Rating", tutor.Rating },
                     {"University", tutor.University }
             };
