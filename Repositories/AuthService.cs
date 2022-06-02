@@ -90,10 +90,10 @@ namespace PomogatorAPI.Repositories
 
 		}
 
-		public void GenerateCode()
+		public void GenerateCode(string id)
         {
 			Random generator = new Random();
-			AuthCode = generator.Next(0, 1000000).ToString("D6");
+			AuthCode = generator.Next(0, 1000000).ToString("D4") + id;
 		}
 
 		public async Task PostUserLogin(LoginData user)
@@ -155,7 +155,7 @@ namespace PomogatorAPI.Repositories
 
 		public async Task GetAuthCodeAsync(string id, string telNum)
         {
-			GenerateCode();
+			GenerateCode(id);
 
 			CreateCodeHash(AuthCode, out byte[] codeHash, out byte[] codeSalt);
 

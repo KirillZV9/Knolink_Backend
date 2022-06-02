@@ -15,6 +15,8 @@ namespace PomogatorAPI.Controllers
     {
 
         private readonly ICustomer _customerRep;
+        private ClaimsIdentity? Identity { get; set; }
+        private string Id {get{return AuthService.GetUserId(Identity);}}
 
         public CustomerController (ICustomer customerRep)
         {
@@ -22,33 +24,28 @@ namespace PomogatorAPI.Controllers
         }
 
 
-        [HttpGet("{id}")]
-        async public Task<ActionResult<List<Customer>>> Get(string id)
+        [HttpGet]
+        async public Task<ActionResult<List<Customer>>> Get()
         {
-            var identity = User.Identity as ClaimsIdentity;
+            Identity = User.Identity as ClaimsIdentity;
 
-            if (AuthService.GetUserId(identity) == id)
+            try
             {
-                try
-                {
-                    await _customerRep.GetAsync(id);
-                    return Ok(_customerRep.Customers);
-                }
-                catch
-                {
-                    return BadRequest();
-                }
+                await _customerRep.GetAsync(Id);
+                return Ok(_customerRep.Customers);
             }
-
-            return Forbid();
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut]
         async public Task<ActionResult<List<Customer>>> Put(Customer customerUpdated)
         {
-            var identity = User.Identity as ClaimsIdentity;
+            Identity = User.Identity as ClaimsIdentity;
 
-            if (AuthService.GetUserId(identity) == customerUpdated.Id)
+            if (Id == customerUpdated.Id)
             {
                 try
                 {
