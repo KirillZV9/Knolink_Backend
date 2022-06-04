@@ -14,17 +14,17 @@ namespace PomogatorAPI.Models
         [FirestoreProperty]
         public double Balance { get; set; }
         [FirestoreProperty]
-        public double? Rating { get; set; }
+        public double Rating { get; set; }
         [FirestoreProperty]
         public string? University { get; set; }
 
-        public Tutor(string id, string telNum, string name, string university)
+        public Tutor(string id, string telNum, string name, string? university)
         {
             Id = id;
             TelNum = telNum;
             Name = name;
             Balance = 0;
-            Rating = null;
+            Rating = 0;
             University = university;
         }
 

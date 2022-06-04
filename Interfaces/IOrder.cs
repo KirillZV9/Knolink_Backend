@@ -1,6 +1,8 @@
-﻿namespace PomogatorAPI.Interfaces
+﻿using PomogatorAPI.Models;
+
+namespace PomogatorAPI.Interfaces
 {
-    public interface Interface
+    public interface IOrder
     {
     }
 }

@@ -9,16 +9,12 @@
 
     public class CustomerRepository : ICustomer
     {
-        public List<Customer> Customers {get; set;}
+        public List<Customer> Customers {get; set;} = new List<Customer>();
 
         private readonly FirestoreDb db =  FirestoreDb.Create(fbProjectId);
 
         private const string fbCollection = "сustomers";
 
-        public CustomerRepository()
-        {
-            Customers = new List<Customer>();
-        }
 
         async public Task DeleteAsync(string id)
         {
@@ -66,18 +62,6 @@
                 throw new ArgumentException();
         }
 
-        public async Task PostASS()
-        {
-            DocumentReference docRef = db.Collection(fbCollection).Document("TEST");
-            Dictionary<string, object> _customer = new Dictionary<string, object>()
-            {
-                {"Id", "1488"},
-                {"Name", "BEN"},
-                {"TelNum", "NO"},
-                {"Balance", 0}
-            };
-            await docRef.SetAsync(_customer);
-        }
 
         public async Task UpdateAsync(Customer customerUpdated)
         {

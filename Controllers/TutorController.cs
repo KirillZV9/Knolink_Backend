@@ -4,6 +4,7 @@ using PomogatorAPI.Interfaces;
 using PomogatorAPI.Repositories;
 using PomogatorAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace PomogatorAPI.Controllers
 {
@@ -13,34 +14,23 @@ namespace PomogatorAPI.Controllers
     public class TutorController : ControllerBase
     {
         private readonly ITutor _tutorRep;
+        private ClaimsIdentity? Identity { get; set; }
+        private string Id { get { return AuthService.GetUserId(Identity); } }
 
         public TutorController(ITutor tutorRep)
         {
             _tutorRep = tutorRep;
         }
 
-        /*
-        [HttpPost]
-        async public Task<ActionResult> Create(string id, string telNum, string name)
-        {
-            try
-            {
-                await _tutorRep.PostAsync(id, telNum, name);
-                return Ok(_tutorRep.TutorList);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        */
 
-        [HttpGet("{id}")]
-        async public Task<ActionResult<List<Tutor>>> Get(string id)
+        [HttpGet]
+        async public Task<ActionResult<List<Tutor>>> Get()
         {
+            Identity = User.Identity as ClaimsIdentity;
+
             try
             {
-                await _tutorRep.GetAsync(id);
+                await _tutorRep.GetAsync(Id);
                 return Ok(_tutorRep.Tutors);
             }
             catch
@@ -49,33 +39,24 @@ namespace PomogatorAPI.Controllers
             }
         }
 
-
-/*        [HttpDelete("{id}")]
-        async public Task<ActionResult<List<Tutor>>> Delete(string id)
-        {
-            try
-            {
-                await _tutorRep.DeleteAsync(id);
-                return Ok(_tutorRep.Tutors);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }*/
 
         [HttpPut]
-        async public Task<ActionResult<List<Tutor>>> Put(Tutor tutorUpdate)
+        async public Task<ActionResult<List<Tutor>>> Put(Tutor tutorUpdated)
         {
-            try
+            if(Id == tutorUpdated.Id)
             {
-                await _tutorRep.UpdateAsync(tutorUpdate);
-                return Ok(_tutorRep.Tutors);
+                try
+                {
+                    await _tutorRep.UpdateAsync(tutorUpdated);
+                    return Ok(_tutorRep.Tutors);
+                }
+                catch
+                {
+                    return BadRequest();
+                }
             }
-            catch
-            {
-                return BadRequest();
-            }
+
+            return Forbid();
         }
 
     }
