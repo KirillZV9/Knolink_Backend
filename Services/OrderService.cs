@@ -11,7 +11,7 @@ namespace PomogatorAPI.Repositories
     {
         public Order Order { get; set; } = new Order();
 
-        public Dictionary<string, Order> OrdersDict { get; set; } = new Dictionary<string, Order>();
+        public List<Order> OrdersList { get; set; } = new List<Order>();
 
         public Dictionary<string, string> RespondedTutors { get; set; } = new Dictionary<string, string>();
 
@@ -50,6 +50,7 @@ namespace PomogatorAPI.Repositories
             if (snapshot.Exists)
             {
                 Order = snapshot.ConvertTo<Order>();
+                Order.Id = snapshot.Id;
             }
             else
                 throw new Exception();
@@ -76,7 +77,8 @@ namespace PomogatorAPI.Repositories
                 foreach (DocumentSnapshot snapshot in ordersQuerySnapshot.Documents)
                 {
                     Order order = snapshot.ConvertTo<Order>();
-                    OrdersDict.Add(snapshot.Id, order);
+                    order.Id = snapshot.Id;
+                    OrdersList.Add(order);
                 }
             }
             else
@@ -135,7 +137,7 @@ namespace PomogatorAPI.Repositories
 
                 foreach (DocumentSnapshot snapshot in ordersQuerySnapshot.Documents)
                 {
-                    RespondedTutors.Add(snapshot.GetValue<string>("TutorId"), snapshot.GetValue<double>("Price"));
+                    RespondedTutors.Add(snapshot.GetValue<string>("TutorId"), snapshot.GetValue<string>("Price"));
                 }
 
                 return RespondedTutors;

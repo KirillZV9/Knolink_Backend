@@ -58,14 +58,14 @@ namespace WebApi.Controllers
 
         [HttpGet("GetByCustomerId")]
         [Authorize(Roles = "customer")]
-        async public Task<ActionResult<Dictionary<string, Order>>> GetByCustomerId()
+        async public Task<ActionResult<List<Order>>> GetByCustomerId()
         {
 
             try
             {
                 await _orderService.GetOrdersById(Id, "CustomerId");
 
-                return Ok(_orderService.OrdersDict);
+                return Ok(_orderService.OrdersList);
             }
             catch
             {
@@ -75,14 +75,14 @@ namespace WebApi.Controllers
 
         [HttpGet("GetByTutorId")]
         [Authorize(Roles = "tutor")]
-        async public Task<ActionResult<Dictionary<string, Order>>> GetByTutorId()
+        async public Task<ActionResult<List<Order>>> GetByTutorId()
         {
 
             try
             {
                 await _orderService.GetOrdersById(Id, "TutorId");
 
-                return Ok(_orderService.OrdersDict);
+                return Ok(_orderService.OrdersList);
             }
             catch
             {
@@ -92,13 +92,13 @@ namespace WebApi.Controllers
 
         [HttpGet("GetBySubject")]
         [Authorize(Roles = "tutor")]
-        async public Task<ActionResult<Dictionary<string, Order>>> GetBySubject(string subject)
+        async public Task<ActionResult<List<Order>>> GetBySubject(string subject)
         {
             try
             {
                 await _orderService.GetOrdersBySubject(subject);
 
-                return Ok(_orderService.OrdersDict);
+                return Ok(_orderService.OrdersList);
             }
             catch
             {

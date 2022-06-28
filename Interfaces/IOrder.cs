@@ -5,7 +5,7 @@ namespace PomogatorAPI.Interfaces
     public interface IOrder
     {
         Order Order { get; set; }
-        Dictionary<string, Order> OrdersDict { get; set; }
+        List<Order> OrdersList { get; set; }
         Dictionary<string, string> RespondedTutors { get; set; }
         Task PostAsync(string customerId, string subject, string description, string type);
         Task GetAsync(string id);
