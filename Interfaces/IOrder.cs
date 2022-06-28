@@ -4,7 +4,7 @@ namespace PomogatorAPI.Interfaces
 {
     public interface IOrder
     {
-        Order Order { get; set; }
+        public Order Order { get; set; }
         List<Order> OrdersList { get; set; }
         Dictionary<string, string> RespondedTutors { get; set; }
         Task PostAsync(string customerId, string subject, string description, string type);
@@ -18,5 +18,6 @@ namespace PomogatorAPI.Interfaces
         Task PostTutorRating(string orderId, int rating);
         Task CountTutorRating(string tutorId);
         Task UpdateRatingAsync(string id, double rating);
+        Task GetAllOrders();
     }
 }

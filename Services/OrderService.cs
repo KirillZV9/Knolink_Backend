@@ -58,7 +58,7 @@ namespace PomogatorAPI.Repositories
 
         public async Task GetOrdersById(string cutomerId, string atribute)
         {
-            Query ordersQuery = db.Collection(fbCollection).WhereEqualTo("CustomerId", cutomerId);
+            Query ordersQuery = db.Collection(fbCollection).WhereEqualTo(atribute, cutomerId);
             QuerySnapshot ordersQuerySnapshot = await ordersQuery.GetSnapshotAsync();
             SetOrdersDict(ordersQuerySnapshot);
         }
@@ -132,18 +132,13 @@ namespace PomogatorAPI.Repositories
             Query ordersQuery = db.Collection("order_response").WhereEqualTo("OrderId", orderId);
             QuerySnapshot ordersQuerySnapshot = await ordersQuery.GetSnapshotAsync();
 
-            if (ordersQuerySnapshot.Count > 0)
+            foreach (DocumentSnapshot snapshot in ordersQuerySnapshot.Documents)
             {
-
-                foreach (DocumentSnapshot snapshot in ordersQuerySnapshot.Documents)
-                {
-                    RespondedTutors.Add(snapshot.GetValue<string>("TutorId"), snapshot.GetValue<string>("Price"));
-                }
-
-                return RespondedTutors;
+                RespondedTutors.Add(snapshot.GetValue<string>("TutorId"), snapshot.GetValue<string>("Price"));
             }
-            else
-                throw new Exception();
+
+            return RespondedTutors;
+           
         }
 
         public async Task PostTutorRating(string orderId, int rating)
@@ -161,13 +156,13 @@ namespace PomogatorAPI.Repositories
 
             string tutorId = orderSnapshot.GetValue<string>("TutorId");
 
-            Dictionary<string, object> _orderResponse = new Dictionary<string, object>(){
+            Dictionary<string, object> _tutorRating = new Dictionary<string, object>(){
                     {"OrderId", orderId},
                     {"TutorId", tutorId},
                     {"Rating", rating}
                 };
 
-            await newRatingRef.SetAsync(_orderResponse);
+            await newRatingRef.SetAsync(_tutorRating);
 
             await CountTutorRating(tutorId);
 
@@ -183,6 +178,11 @@ namespace PomogatorAPI.Repositories
             Query ratingQuery = db.Collection("tutor_rating").WhereEqualTo("TutorId", tutorId);
             QuerySnapshot ratingQuerySnapshot = await ratingQuery.GetSnapshotAsync();
 
+            foreach(DocumentSnapshot ratingSnapshot in ratingQuerySnapshot.Documents)
+            {
+                ratingsValue += int.Parse(ratingSnapshot.GetValue<string>("Rating"));
+            }
+
             int amountOfRatings = ratingQuerySnapshot.Count;
 
             TutorRating =  ratingsValue / amountOfRatings;
@@ -195,6 +195,13 @@ namespace PomogatorAPI.Repositories
             
             if (tutorRef != null)
                 await tutorRef.UpdateAsync("Rating", rating);
+        }
+
+        public async Task GetAllOrders()
+        {
+            Query ordersQuery = db.Collection(fbCollection).WhereEqualTo("Status", "open");
+            QuerySnapshot ordersQuerySnapshot = await ordersQuery.GetSnapshotAsync();
+            SetOrdersDict(ordersQuerySnapshot);
         }
 
 

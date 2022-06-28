@@ -48,7 +48,7 @@ namespace WebApi.Controllers
             try
             {
                 await _orderService.GetAsync(id);
-                return Ok();
+                return Ok(_orderService.Order);
             }
             catch
             {
@@ -60,7 +60,6 @@ namespace WebApi.Controllers
         [Authorize(Roles = "customer")]
         async public Task<ActionResult<List<Order>>> GetByCustomerId()
         {
-
             try
             {
                 await _orderService.GetOrdersById(Id, "CustomerId");
@@ -106,14 +105,30 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("GetAll")]
+        [Authorize(Roles = "tutor")]
+        async public Task<ActionResult<List<Order>>> GetAll()
+        {
+            try
+            {
+                await _orderService.GetAllOrders();
+
+                return Ok(_orderService.OrdersList);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPost("PostResponse")]
         [Authorize(Roles = "tutor")]
-        async public Task<ActionResult> PostResponse(string orderId, string price)
+        async public Task<ActionResult> PostResponse(ResponseDTO dto)
         {
 
             try
             {
-                await _orderService.PostResponse(Id, orderId, price);
+                await _orderService.PostResponse(dto.OrderId, Id, dto.Price);
 
                 return Ok();
             }
@@ -157,11 +172,11 @@ namespace WebApi.Controllers
 
         [HttpPost("RateTutor")]
         [Authorize(Roles = "customer")]
-        public async Task<ActionResult> RateTutor(string orderId, int rating)
+        public async Task<ActionResult> RateTutor(RatingDTO dto)
         {
             try
             {
-                await _orderService.PostTutorRating(orderId, rating);
+                await _orderService.PostTutorRating(dto.OrderId, dto.Rating);
 
                 return Ok();
             }
