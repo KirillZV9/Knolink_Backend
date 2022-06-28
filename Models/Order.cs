@@ -8,10 +8,11 @@
         public string Description { get; set; } = string.Empty;
         public double? Price { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
         public DateTime Created { get; set; } = DateTime.MinValue;
         public DateTime? Closed { get; set; } = DateTime.MinValue;
 
-        public Order(string customerId, string subject, string description)
+        public Order(string customerId, string subject, string description, string type)
         {
             CustomerId = customerId;
             TutorId = null;
@@ -21,6 +22,7 @@
             Status = "open";
             Created = DateTime.Now;
             Closed = null;
+            Type = type;
         }
 
         public Order() { }

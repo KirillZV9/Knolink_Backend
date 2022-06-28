@@ -10,11 +10,13 @@ Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", appCredPath
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<ICustomer, CustomerRepository>();
+builder.Services.AddScoped<ICustomer, CustomerService>();
 
-builder.Services.AddScoped<ITutor, TutorRepository>();
+builder.Services.AddScoped<ITutor, TutorService>();
 
 builder.Services.AddScoped<IAuth, AuthService>();
+
+builder.Services.AddScoped<IOrder, OrderService>();
 
 builder.Services.AddControllers();
 

@@ -6,11 +6,11 @@ namespace PomogatorAPI.Models
     public class Customer
     {
         [FirestoreProperty]
-        public string Id { get; set; }
+        public string Id { get; set; } = String.Empty;
         [FirestoreProperty]
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
         [FirestoreProperty]
-        public string TelNum { get; set; }
+        public string TelNum { get; set; } = String.Empty;
         [FirestoreProperty]
         public double Balance { get; set; }
 

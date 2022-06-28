@@ -159,9 +159,15 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost("RateTutor")]
+        /*[HttpPost("RateTutor")]
         [Authorize(Roles = "customer")]
-        public async Task<ActionResult> RateTutor(string orderId, string )
+        public async Task<ActionResult> RateTutor(string orderId, int rating)
+        {
+            try
+            {
+               await _orderService.PostTutorRating(orderId, rating);
+            }
+        }*/
     }
 
 }

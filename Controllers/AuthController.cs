@@ -32,25 +32,25 @@ namespace PomogatorAPI.Controllers
             }
             catch
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 
         [HttpGet("codeverification")]
-        async public Task<ActionResult<List<string>>> CodeVerification(string id, string authCode)
+        async public Task<ActionResult<Dictionary<string, string>>> CodeVerification(string id, string authCode)
         {
             try
             {
                 await _authService.CodeVerification(id, authCode);
-                return Ok(new List<string>
+                return Ok(new Dictionary<string, string>
                 {
-                    _authService.User.Id,
-                    _authService.User.TelNum
+                    {"Id", _authService.User.Id},
+                    {"TelNum", _authService.User.TelNum}
                 });
             }
             catch
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 
@@ -67,7 +67,7 @@ namespace PomogatorAPI.Controllers
             }
             catch
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 
@@ -81,19 +81,17 @@ namespace PomogatorAPI.Controllers
                   await  _authService.SignIn(id, authCode, "customer");
                   return Ok(_authService.Token);
                 }
-                return NotFound();
+                return BadRequest();
             }
             catch
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 
         [HttpPost("tutorsignup")]
         async public Task<ActionResult<string>> TutorSignUp(TutorDTO dto)
         {
-            var identity = User.Identity as ClaimsIdentity;
-
             try
             {
                 await _authService.SignIn(dto.Id, dto.AuthCode, "tutor");
@@ -104,7 +102,7 @@ namespace PomogatorAPI.Controllers
             }
             catch
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 
@@ -118,11 +116,11 @@ namespace PomogatorAPI.Controllers
                     await _authService.SignIn(id, authCode, "tutor");
                     return Ok(_authService.Token);
                 }
-                return NotFound();
+                return BadRequest();
             }
             catch
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 

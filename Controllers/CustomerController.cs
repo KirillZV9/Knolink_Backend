@@ -45,20 +45,19 @@ namespace PomogatorAPI.Controllers
         {
             Identity = User.Identity as ClaimsIdentity;
 
-            if (Id == customerUpdated.Id)
-            {
-                try
-                {
-                    await _customerRep.UpdateAsync(customerUpdated);
-                    return Ok(_customerRep.Customers);
-                }
-                catch
-                {
-                    return BadRequest();
-                }
-            }
+            if (Id != customerUpdated.Id)
+                return Forbid();
 
-            return Forbid();
+            try
+            {
+                await _customerRep.UpdateAsync(customerUpdated);
+                return Ok(_customerRep.Customers);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+            
         }
         
         

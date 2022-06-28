@@ -10,5 +10,7 @@ namespace PomogatorAPI.Interfaces
         Task PostAsync(string id, string telNum, string name, string? university);
         Task UpdateAsync(Tutor tutor);
         Task DeleteAsync(string id);
+
+        Task GetTutorsById(List<string> tutorsId); 
     }
 }

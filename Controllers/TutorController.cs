@@ -43,20 +43,21 @@ namespace PomogatorAPI.Controllers
         [HttpPut]
         async public Task<ActionResult<List<Tutor>>> Put(Tutor tutorUpdated)
         {
-            if(Id == tutorUpdated.Id)
-            {
-                try
-                {
-                    await _tutorRep.UpdateAsync(tutorUpdated);
-                    return Ok(_tutorRep.Tutors);
-                }
-                catch
-                {
-                    return BadRequest();
-                }
-            }
+            Identity = User.Identity as ClaimsIdentity;
 
-            return Forbid();
+            if (Id == tutorUpdated.Id)
+                return Forbid();
+
+            try
+            {
+                await _tutorRep.UpdateAsync(tutorUpdated);
+                return Ok(_tutorRep.Tutors);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+            
         }
 
     }

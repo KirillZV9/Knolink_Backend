@@ -143,19 +143,22 @@ namespace PomogatorAPI.Repositories
                 throw new Exception();
         }
 
-        public async Task PostTutorRating(string orderId, string tutorId, int rating)
+        public async Task PostTutorRating(string orderId, int rating)
         {
-            Query responseQuery = db.Collection("order_rating").WhereEqualTo("OrderId", orderId).WhereEqualTo("Status", tutorId);
+            Query responseQuery = db.Collection("order_rating").WhereEqualTo("OrderId", orderId);
             QuerySnapshot responseQuerySnapshot = await responseQuery.GetSnapshotAsync();
 
             if (responseQuerySnapshot.Count != 0)
                 throw new Exception();
 
-            DocumentReference newRatingRef = db.Collection("totor_rating").Document();
+            DocumentReference orderRef = db.Collection(fbCollection).Document(orderId);
+            DocumentSnapshot orderSnapshot = await orderRef.GetSnapshotAsync();
+
+            DocumentReference newRatingRef = db.Collection("tutor_rating").Document();
 
             Dictionary<string, object> _orderResponse = new Dictionary<string, object>(){
                     {"OrderId", orderId},
-                    {"CustomerId", tutorId},
+                    {"CustomerId", orderSnapshot.GetValue<string>("TutorId")},
                     {"Rating", rating}
                 };
 

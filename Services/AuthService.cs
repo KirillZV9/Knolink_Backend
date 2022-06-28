@@ -93,7 +93,7 @@ namespace PomogatorAPI.Repositories
 		public void GenerateCode(string id)
         {
 			Random generator = new Random();
-			AuthCode = generator.Next(0, 1000000).ToString("D4") + id;
+			AuthCode = generator.Next(0, 10000).ToString("D4") + id;
 		}
 
 		public async Task PostUserLogin(LoginData user)
