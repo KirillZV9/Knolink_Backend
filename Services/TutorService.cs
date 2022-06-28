@@ -92,11 +92,12 @@
 
         }
 
-        public async Task GetTutorsById(List<string> idList)
+        public async Task GetTutorsById(Dictionary<string, string> responsesDict)
         {
-            foreach(string id in idList)
+
+            foreach(var response in responsesDict)
             {
-                await GetAsync(id);
+                await GetAsync(response.Key);
             }
         }
 

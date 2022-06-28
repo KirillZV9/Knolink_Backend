@@ -11,6 +11,6 @@ namespace PomogatorAPI.Interfaces
         Task UpdateAsync(Tutor tutor);
         Task DeleteAsync(string id);
 
-        Task GetTutorsById(List<string> tutorsId); 
+        Task GetTutorsById(Dictionary<string, string> responsesDict); 
     }
 }

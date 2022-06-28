@@ -4,6 +4,7 @@ using PomogatorAPI.Interfaces;
 using PomogatorAPI.Models;
 using PomogatorAPI.Repositories;
 using System.Security.Claims;
+using WebApi.Models;
 
 namespace WebApi.Controllers
 {
@@ -13,8 +14,7 @@ namespace WebApi.Controllers
     {
         private readonly IOrder _orderService;
         private readonly ITutor _tutorService;
-        private ClaimsIdentity? Identity { get; set; }
-        private string Id { get { return AuthService.GetUserId(Identity); } }
+        private string Id { get { return User.FindFirstValue(ClaimTypes.NameIdentifier); } }
 
         public OrderController (IOrder orderService, ITutor tutorService)
         {
@@ -24,16 +24,15 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "customer")]
-        async public Task<ActionResult> Post(string customerId, string subject, string description, string type)
+        async public Task<ActionResult> Post(OrderDTO dto)
         {
-            Identity = User.Identity as ClaimsIdentity;
-
-            if (Id != customerId)
+            
+            if (Id != dto.CustomerId)
                 return Forbid();
 
             try
             {
-                await _orderService.PostAsync(customerId, subject, description, type);
+                await _orderService.PostAsync(dto.CustomerId, dto.Subject, dto.Description, dto.Type);
                 return Ok();
             }
             catch
@@ -61,7 +60,6 @@ namespace WebApi.Controllers
         [Authorize(Roles = "customer")]
         async public Task<ActionResult<Dictionary<string, Order>>> GetByCustomerId()
         {
-            Identity = User.Identity as ClaimsIdentity;
 
             try
             {
@@ -79,7 +77,6 @@ namespace WebApi.Controllers
         [Authorize(Roles = "tutor")]
         async public Task<ActionResult<Dictionary<string, Order>>> GetByTutorId()
         {
-            Identity = User.Identity as ClaimsIdentity;
 
             try
             {
@@ -111,13 +108,12 @@ namespace WebApi.Controllers
 
         [HttpPost("PostResponse")]
         [Authorize(Roles = "tutor")]
-        async public Task<ActionResult> PostResponse(string orderId)
+        async public Task<ActionResult> PostResponse(string orderId, string price)
         {
-            Identity = User.Identity as ClaimsIdentity;
 
             try
             {
-                await _orderService.PostResponse(Id, orderId);
+                await _orderService.PostResponse(Id, orderId, price);
 
                 return Ok();
             }
@@ -129,13 +125,13 @@ namespace WebApi.Controllers
 
         [HttpGet("GetRespondedTutors")]
         [Authorize(Roles = "customer")]
-        public async Task<ActionResult<List<Tutor>>> GetRespondedTutors(string orderId)
+        public async Task<ActionResult<Dictionary<Tutor, string>>> GetRespondedTutors(string orderId)
         {
             try
             { 
                 await _tutorService.GetTutorsById(await _orderService.GetAllRespondedTutors(orderId));
 
-                return Ok(_tutorService.Tutors);
+                return Ok(SetTutorPriceDict(_orderService.RespondedTutors, _tutorService.Tutors));
             }
             catch
             {
@@ -159,15 +155,33 @@ namespace WebApi.Controllers
             }
         }
 
-        /*[HttpPost("RateTutor")]
+        [HttpPost("RateTutor")]
         [Authorize(Roles = "customer")]
         public async Task<ActionResult> RateTutor(string orderId, int rating)
         {
             try
             {
-               await _orderService.PostTutorRating(orderId, rating);
+                await _orderService.PostTutorRating(orderId, rating);
+
+                return Ok();
             }
-        }*/
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        private static Dictionary<Tutor, string> SetTutorPriceDict(Dictionary<string, string> responseDict, List<Tutor> tutorList)
+        {
+            Dictionary<Tutor, string> tutorPriceDict = new Dictionary<Tutor, string>();
+
+            foreach(Tutor tutor in tutorList)
+            {
+                tutorPriceDict.Add(tutor, responseDict[tutor.Id]);
+            }
+
+            return tutorPriceDict;
+        }
     }
 
 }

@@ -13,12 +13,13 @@ namespace PomogatorAPI.Repositories
 
         public Dictionary<string, Order> OrdersDict { get; set; } = new Dictionary<string, Order>();
 
-        public List<Tutor> RespondedTutors { get; set; } = new List<Tutor>();
+        public Dictionary<string, string> RespondedTutors { get; set; } = new Dictionary<string, string>();
 
         private readonly FirestoreDb db = FirestoreDb.Create(fbProjectId);
 
         private const string fbCollection = "orders";
 
+        private double TutorRating;
 
         public async Task PostAsync(string customerId, string subject, string description, string type)
         {
@@ -99,13 +100,13 @@ namespace PomogatorAPI.Repositories
             if (docRef != null)
             {
                 await docRef.UpdateAsync("Status", "closed");
-                await docRef.UpdateAsync("Closed", DateTime.Now);
+                await docRef.UpdateAsync("Closed", DateTime.UtcNow);
             }
             else
                 throw new Exception();
         }
 
-        public async Task PostResponse(string orderId, string tutorId)
+        public async Task PostResponse(string orderId, string tutorId, string price)
         {
             Query responseQuery = db.Collection("order_response").WhereEqualTo("OrderId", orderId).WhereEqualTo("TutorId", tutorId);
             QuerySnapshot responseQuerySnapshot = await responseQuery.GetSnapshotAsync();
@@ -117,27 +118,27 @@ namespace PomogatorAPI.Repositories
 
             Dictionary<string, object> _orderResponse = new Dictionary<string, object>(){
                     {"OrderId", orderId},
-                    {"TutorId", tutorId}
+                    {"TutorId", tutorId},
+                    {"Price", price}
                 };
 
             await docRef.SetAsync(_orderResponse);
         }
 
-        public async Task<List<string>> GetAllRespondedTutors(string orderId)
+        public async Task<Dictionary<string, string>> GetAllRespondedTutors(string orderId)
         {
             Query ordersQuery = db.Collection("order_response").WhereEqualTo("OrderId", orderId);
             QuerySnapshot ordersQuerySnapshot = await ordersQuery.GetSnapshotAsync();
 
             if (ordersQuerySnapshot.Count > 0)
             {
-                List<string> tutorsId = new List<string>();
 
                 foreach (DocumentSnapshot snapshot in ordersQuerySnapshot.Documents)
                 {
-                    tutorsId.Add(snapshot.GetValue<string>("TutorId"));
+                    RespondedTutors.Add(snapshot.GetValue<string>("TutorId"), snapshot.GetValue<double>("Price"));
                 }
 
-                return tutorsId;
+                return RespondedTutors;
             }
             else
                 throw new Exception();
@@ -156,17 +157,24 @@ namespace PomogatorAPI.Repositories
 
             DocumentReference newRatingRef = db.Collection("tutor_rating").Document();
 
+            string tutorId = orderSnapshot.GetValue<string>("TutorId");
+
             Dictionary<string, object> _orderResponse = new Dictionary<string, object>(){
                     {"OrderId", orderId},
-                    {"CustomerId", orderSnapshot.GetValue<string>("TutorId")},
+                    {"TutorId", tutorId},
                     {"Rating", rating}
                 };
 
             await newRatingRef.SetAsync(_orderResponse);
 
+            await CountTutorRating(tutorId);
+
+            await UpdateRatingAsync(tutorId, TutorRating);
+
+
         }
 
-        public async Task<double> CountTutorRating(string tutorId)
+        public async Task CountTutorRating(string tutorId)
         { 
             int ratingsValue = 0;
 
@@ -175,8 +183,16 @@ namespace PomogatorAPI.Repositories
 
             int amountOfRatings = ratingQuerySnapshot.Count;
 
-            return ratingsValue / amountOfRatings;
+            TutorRating =  ratingsValue / amountOfRatings;
 
+        }
+
+        public async Task UpdateRatingAsync(string id, double rating)
+        {
+            DocumentReference tutorRef = db.Collection("tutors").Document(id);
+            
+            if (tutorRef != null)
+                await tutorRef.UpdateAsync("Rating", rating);
         }
 
 

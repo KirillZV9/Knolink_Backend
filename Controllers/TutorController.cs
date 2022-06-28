@@ -14,8 +14,7 @@ namespace PomogatorAPI.Controllers
     public class TutorController : ControllerBase
     {
         private readonly ITutor _tutorRep;
-        private ClaimsIdentity? Identity { get; set; }
-        private string Id { get { return AuthService.GetUserId(Identity); } }
+        private string Id { get { return User.FindFirstValue(ClaimTypes.NameIdentifier); } }
 
         public TutorController(ITutor tutorRep)
         {
@@ -26,7 +25,6 @@ namespace PomogatorAPI.Controllers
         [HttpGet]
         async public Task<ActionResult<List<Tutor>>> Get()
         {
-            Identity = User.Identity as ClaimsIdentity;
 
             try
             {
@@ -43,7 +41,6 @@ namespace PomogatorAPI.Controllers
         [HttpPut]
         async public Task<ActionResult<List<Tutor>>> Put(Tutor tutorUpdated)
         {
-            Identity = User.Identity as ClaimsIdentity;
 
             if (Id == tutorUpdated.Id)
                 return Forbid();

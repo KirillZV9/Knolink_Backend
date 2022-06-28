@@ -6,7 +6,7 @@
         public string? TutorId { get; set; }
         public string Subject { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public double? Price { get; set; }
+        public string? Price { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
         public DateTime Created { get; set; } = DateTime.MinValue;
@@ -20,7 +20,7 @@
             Description = description;
             Price = null;
             Status = "open";
-            Created = DateTime.Now;
+            Created = DateTime.UtcNow;
             Closed = null;
             Type = type;
         }

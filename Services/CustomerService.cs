@@ -52,8 +52,7 @@
                 Dictionary<string, object> _customer = new Dictionary<string, object>(){
                     {"Id", customer.Id},
                     {"Name", customer.Name},
-                    {"TelNum", customer.TelNum },
-                    {"Balance", customer.Balance }
+                    {"TelNum", customer.TelNum }
                 };
 
                 await docRef.SetAsync(_customer);
@@ -72,8 +71,7 @@
                 {
                     {"Id", customerUpdated.Id},
                     {"Name", customerUpdated.Name},
-                    {"TelNum", customerUpdated.TelNum},
-                    {"Balance", customerUpdated.Balance}
+                    {"TelNum", customerUpdated.TelNum}
 
                 };
 

@@ -11,8 +11,6 @@ namespace PomogatorAPI.Models
         public string Name { get; set; } = String.Empty;
         [FirestoreProperty]
         public string TelNum { get; set; } = String.Empty;
-        [FirestoreProperty]
-        public double Balance { get; set; }
 
 
         public Customer(string id, string telNum, string name)
@@ -20,7 +18,6 @@ namespace PomogatorAPI.Models
             Id = id;
             Name = name;
             TelNum = telNum;
-            Balance = 0;
         }
 
         public Customer() { }

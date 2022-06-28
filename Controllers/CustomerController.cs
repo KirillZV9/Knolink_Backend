@@ -15,8 +15,7 @@ namespace PomogatorAPI.Controllers
     {
 
         private readonly ICustomer _customerRep;
-        private ClaimsIdentity? Identity { get; set; }
-        private string Id {get{return AuthService.GetUserId(Identity);}}
+        private string Id { get{return User.FindFirstValue(ClaimTypes.NameIdentifier); }}
 
         public CustomerController (ICustomer customerRep)
         {
@@ -27,7 +26,6 @@ namespace PomogatorAPI.Controllers
         [HttpGet]
         async public Task<ActionResult<List<Customer>>> Get()
         {
-            Identity = User.Identity as ClaimsIdentity;
 
             try
             {
@@ -43,7 +41,6 @@ namespace PomogatorAPI.Controllers
         [HttpPut]
         async public Task<ActionResult<List<Customer>>> Put(Customer customerUpdated)
         {
-            Identity = User.Identity as ClaimsIdentity;
 
             if (Id != customerUpdated.Id)
                 return Forbid();

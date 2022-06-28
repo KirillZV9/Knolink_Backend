@@ -168,12 +168,6 @@ namespace PomogatorAPI.Repositories
 
         }
 
-		public static string GetUserId(ClaimsIdentity identity)
-        {
-			IEnumerable<Claim> claims = identity.Claims;
-			return claims.Where(p => p.Type == "NameIdentifier").FirstOrDefault().Value;
-		}
-
 	}
 }
 
