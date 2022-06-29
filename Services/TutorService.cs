@@ -101,6 +101,17 @@
             }
         }
 
+        public async Task UpdateBalance(string tutorId, string price)
+        {
+            DocumentReference tutorRef = db.Collection(fbCollection).Document(tutorId);
+            DocumentSnapshot tutorSnapshot = await tutorRef.GetSnapshotAsync();
+
+            double newBalance = tutorSnapshot.GetValue<double>("Balance")
+                + double.Parse(price);
+
+            await tutorRef.UpdateAsync("Balance", newBalance);
+        }
+
 
     }
 

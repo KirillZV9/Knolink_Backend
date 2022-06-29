@@ -60,17 +60,17 @@ namespace PomogatorAPI.Repositories
         {
             Query ordersQuery = db.Collection(fbCollection).WhereEqualTo(atribute, cutomerId);
             QuerySnapshot ordersQuerySnapshot = await ordersQuery.GetSnapshotAsync();
-            SetOrdersDict(ordersQuerySnapshot);
+            SetOrdersList(ordersQuerySnapshot);
         }
 
         public async Task GetOrdersBySubject(string subject)
         {
             Query ordersQuery = db.Collection(fbCollection).WhereEqualTo("Status", "open").WhereEqualTo("Subject", subject);
             QuerySnapshot ordersQuerySnapshot = await ordersQuery.GetSnapshotAsync();
-            SetOrdersDict(ordersQuerySnapshot);
+            SetOrdersList(ordersQuerySnapshot);
         }
 
-        private void SetOrdersDict(QuerySnapshot ordersQuerySnapshot)
+        private void SetOrdersList(QuerySnapshot ordersQuerySnapshot)
         {
             if (ordersQuerySnapshot.Count > 0)
             {
@@ -81,8 +81,7 @@ namespace PomogatorAPI.Repositories
                     OrdersList.Add(order);
                 }
             }
-            else
-                throw new Exception();
+  
         }
 
         public async Task SetTutor(string orderId, string tutorId)
@@ -97,7 +96,7 @@ namespace PomogatorAPI.Repositories
                 throw new Exception();
         }
 
-        public async Task CloseOrder(string orderId)
+        public async Task<string> CloseOrder(string orderId)
         {
             DocumentReference docRef = db.Collection(fbCollection).Document(orderId);
 
@@ -108,6 +107,10 @@ namespace PomogatorAPI.Repositories
             }
             else
                 throw new Exception();
+
+            DocumentSnapshot orderSnapshot = await docRef.GetSnapshotAsync();
+
+            return orderSnapshot.GetValue<string>("Price");
         }
 
         public async Task PostResponse(string orderId, string tutorId, string price)
@@ -203,7 +206,7 @@ namespace PomogatorAPI.Repositories
         {
             Query ordersQuery = db.Collection(fbCollection).WhereEqualTo("Status", "open");
             QuerySnapshot ordersQuerySnapshot = await ordersQuery.GetSnapshotAsync();
-            SetOrdersDict(ordersQuerySnapshot);
+            SetOrdersList(ordersQuerySnapshot);
         }
 
 

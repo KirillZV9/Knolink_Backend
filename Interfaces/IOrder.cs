@@ -12,7 +12,7 @@ namespace PomogatorAPI.Interfaces
         Task GetOrdersById(string customerId, string atribute);
         Task GetOrdersBySubject(string subject);
         Task SetTutor(string orderId, string tutorId);
-        Task CloseOrder(string orderId);
+        Task<string> CloseOrder(string orderId);
         Task PostResponse(string orderId, string tutorId, string price);
         Task<Dictionary<string, string>> GetAllRespondedTutors(string orderId);
         Task PostTutorRating(string orderId, int rating);

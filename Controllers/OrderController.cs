@@ -160,7 +160,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _orderService.CloseOrder(orderId);
+                await _tutorService.UpdateBalance(Id, await _orderService.CloseOrder(orderId));
 
                 return Ok();
             }
