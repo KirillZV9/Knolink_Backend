@@ -5,7 +5,7 @@ using PomogatorAPI.Models;
 using PomogatorAPI.Repositories;
 using System.Text;
 
-string appCredPath = @"C:\Users\zu-kl\source\repos\PomogatorApp\PomogatorAPI\FirebaseCred.json";
+string appCredPath = @"/Users/kirillss/Projects/knolink/KNOLINK-AppBackend/FirebaseCred.json";
 Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", appCredPath);
 
 var builder = WebApplication.CreateBuilder(args);
