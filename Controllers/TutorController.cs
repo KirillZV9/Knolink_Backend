@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace PomogatorAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = "tutor")]
     public class TutorController : ControllerBase
     {

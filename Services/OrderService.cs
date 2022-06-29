@@ -87,10 +87,12 @@ namespace PomogatorAPI.Repositories
 
         public async Task SetTutor(string orderId, string tutorId)
         {
-            DocumentReference docRef = db.Collection(fbCollection).Document(orderId);
+            DocumentReference orderRef = db.Collection(fbCollection).Document(orderId);
+            DocumentSnapshot orderSnapshot = await orderRef.GetSnapshotAsync();
 
-            if (docRef != null)
-                await docRef.UpdateAsync("TutorId", tutorId);
+
+            if (orderRef != null && orderSnapshot.GetValue<string?>("TutorId") == null)
+                await orderRef.UpdateAsync("TutorId", tutorId);
             else
                 throw new Exception();
         }
@@ -180,7 +182,7 @@ namespace PomogatorAPI.Repositories
 
             foreach(DocumentSnapshot ratingSnapshot in ratingQuerySnapshot.Documents)
             {
-                ratingsValue += int.Parse(ratingSnapshot.GetValue<string>("Rating"));
+                ratingsValue += ratingSnapshot.GetValue<int>("Rating");
             }
 
             int amountOfRatings = ratingQuerySnapshot.Count;

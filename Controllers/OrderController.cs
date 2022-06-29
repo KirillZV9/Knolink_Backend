@@ -140,13 +140,13 @@ namespace WebApi.Controllers
 
         [HttpGet("GetRespondedTutors")]
         [Authorize(Roles = "customer")]
-        public async Task<ActionResult<Dictionary<Tutor, string>>> GetRespondedTutors(string orderId)
+        public async Task<ActionResult<List<RespondedTutor>>> GetRespondedTutors(string orderId)
         {
             try
             { 
                 await _tutorService.GetTutorsById(await _orderService.GetAllRespondedTutors(orderId));
 
-                return Ok(SetTutorPriceDict(_orderService.RespondedTutors, _tutorService.Tutors));
+                return Ok(SetRespondedTutorsList(_orderService.RespondedTutors, _tutorService.Tutors));
             }
             catch
             {
@@ -186,16 +186,35 @@ namespace WebApi.Controllers
             }
         }
 
-        private static Dictionary<Tutor, string> SetTutorPriceDict(Dictionary<string, string> responseDict, List<Tutor> tutorList)
+        [HttpPatch("SetTutor")]
+        [Authorize(Roles = "customer")]
+        public async Task<ActionResult<Tutor>> SetTutor(string orderId, string tutorId)
         {
-            Dictionary<Tutor, string> tutorPriceDict = new Dictionary<Tutor, string>();
+            try
+            {
+                await _orderService.SetTutor(orderId, tutorId);
+                await _tutorService.GetAsync(tutorId);
+
+                return Ok(_tutorService.Tutors);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        private static List<RespondedTutor> SetRespondedTutorsList(Dictionary<string, string> responseDict, List<Tutor> tutorList)
+        {
+            List<RespondedTutor> respondedTutorList = new List<RespondedTutor>();
 
             foreach(Tutor tutor in tutorList)
             {
-                tutorPriceDict.Add(tutor, responseDict[tutor.Id]);
+                var _respondedTutor = new RespondedTutor(tutor, responseDict[tutor.Id]);
+
+                respondedTutorList.Add(_respondedTutor);
             }
 
-            return tutorPriceDict;
+            return respondedTutorList;
         }
     }
 

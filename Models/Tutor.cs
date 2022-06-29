@@ -31,6 +31,3 @@ namespace PomogatorAPI.Models
         public Tutor() { }
     }   
 }
-/*
-Дата рождения?
-*/
